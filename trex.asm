@@ -45,7 +45,7 @@ end_lines:
 ###########==========player chr============##################
 # player block size: 15gu width 17gu height
 # used: $7, $8, $9, $20, $25
-	
+player_chr:
        	lui $20, 0x1001 #adress start 
        	addi $20, $20, 15892 #actual adress
        	addi $8, $0, 17 #player block height
@@ -69,7 +69,7 @@ end_player_columns:
 	
 	j for_player_lines
 end_player_lines:
-
+	
 ###########=====enemie block(cactus)========##################
 # cactus block size: 10gu width 17gu height
 # used: $10, $11, $12, $19, $20, $21, $22, $24
@@ -99,10 +99,12 @@ end_cactus_columns:
 	j for_cactus_lines
 end_cactus_lines:
 
+#################=====game run=============########################
+
 game:
 	
 ################=====player-controls======##########################
-#used: $8, $13, $14, $15, $20, $23
+#used: $8, $13, $14, $15, $20, ($23)
 
 player_controls:
 	lui $20, 0x1001 #adress start 
@@ -122,7 +124,7 @@ for_player_controls:
        	beq $16, $13, type_a
        	#beq $16, $14, type_d
        	#beq $16, $15, type_w
-       	beq $16, $16, end
+       	#beq $16, $16, end
        	                  
        	j no_type 
                                          
@@ -159,7 +161,11 @@ end_player_a_lines:
 a_next:	
 	j no_type
 
-# other keybords...
+#-------------------------------------------------------------------
+#type_d
+#-------------------------------------------------------------------
+#type_w
+#-------------------------------------------------------------------
 
 no_type:
 
@@ -199,11 +205,46 @@ end_move_cactus_lines:
 	addi $22, $22, -4
 	bne $22, $12, move_cactus_next
 	
+	addi $9, $0, 16384 #eraser adress
+	addi $10, $0, 16 #eraser height
+	addi $11, $0, 10 #eraser width
+	jal eraser_cactus
+	
 	addi $22, $0, 0	
 	
 move_cactus_next:
 	j game #game loop callback
-
+	
+##############========eraser (cactus)===============###################
+# uses: $9 - adress in screen, $10 - height, $11 - width
+# used: $7, $8, $9, $10, $11, $12
+eraser_cactus:
+	lui $20, 0x1001
+	add $20, $20, $9 # actual adress
+	add $10, $0, $10 # eraser height
+      	
+for_eraser_cactus_lines:
+	beq $10, $0, end_eraser_cactus_lines
+	
+	add $12, $0, $11 #eraser width
+for_eraser_cactus_columns:
+	beq $12, $0, end_eraser_cactus_columns
+	
+	lw $25, 0x8000($20)
+	sw $25, 0($20)
+	addi $20, $20, 4
+	
+	addi $12, $12, -1
+	j for_eraser_cactus_columns
+end_eraser_cactus_columns:
+	addi $10, $10, -1
+	
+	addi $20, $20, 472
+	
+	j for_eraser_cactus_lines
+end_eraser_cactus_lines:
+	jr $31
+	
 #############=========delay===============####################
 delay:
 	addi $15, $0, 0x001fff
