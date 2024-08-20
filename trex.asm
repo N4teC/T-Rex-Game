@@ -8,7 +8,6 @@
 main:	
 ######################=====scenario=====###############################
 # used: $6, $7, $8, $9, $20
-
 	lui $20, 0x1001 
 	
 	addi $7, $0, 16 #mid line
@@ -47,7 +46,7 @@ end_lines:
 # used: $7, $8, $9, $20, $25
 player_chr:
        	lui $20, 0x1001 #adress start 
-       	addi $20, $20, 15892 #actual adress
+       	addi $20, $20, 15932 #actual adress
        	addi $8, $0, 17 #player block height
 for_player_lines:
 	beq $8, $0, end_player_lines
@@ -74,7 +73,7 @@ end_player_lines:
 # cactus block size: 10gu width 17gu height
 # used: $10, $11, $12, $19, $20, $21, $22, $24
 
-cactus:
+cactus_builder:
        	lui $20, 0x1001 #adress start 
        	addi $20, $20, 16856 #actual adress
        	
@@ -173,46 +172,43 @@ end_cactus_columns:
 	j for_cactus_lines
 end_cactus_lines:
 
+	
 #################=====game run=============########################
-
+# used: $8, $9, $10, $11, $13, $16, $17, $20, $21, ($22), ($23), $26
 game:
 	
 ################=====player-controls======##########################
-#used: $8, $13, $14, $15, $20, ($23)
+#used: $8, $9, $13, $16, $17, $20, ($23), $26
 
 player_controls:
 	lui $20, 0x1001 #adress start
-	addi $20, $20, 15892 #actual adress
+	addi $20, $20, 15932 #actual adress
        	add $20, $20, $23
        	
        	lui $26, 0xffff 
-       	addi $13, $0, 'a'
-       	addi $14, $0, 'd'
-       	addi $15, $0, 'w'
-       	addi $16, $0, ' '
+       	addi $13, $0, ' '
+       	addi $16, $0, 'x'
        	
 for_player_controls: 
        	
 	lw $10, 0($26)
        	beq $10, $0, no_type      
        	lw $16, 4($26)
-       	beq $16, $13, type_a
-       	#beq $16, $14, type_d
-       	#beq $16, $15, type_w
+       	beq $16, $13, type_space
        	beq $16, $16, end
        	                  
        	j no_type 
                                          
-type_a:  
+type_space:  
 	addi $12, $0, 15872 #if parameter loop
 	
 	addi $8, $0, 17 #player block height
-for_player_a_lines:
-	beq $8, $0, end_player_a_lines
+for_player_space_lines:
+	beq $8, $0, end_player_space_lines
 	
 	addi $9, $0, 15 #player block width
-for_player_a_columns:
-	beq $9, $0, end_player_a_columns
+for_player_space_columns:
+	beq $9, $0, end_player_space_columns
 	
    	lw $17, 0x8000($20)
        	sw $17, 0($20)
@@ -222,109 +218,101 @@ for_player_a_columns:
 	addi $20, $20, 8
 	
 	addi $9, $9, -1
-	j for_player_a_columns
-end_player_a_columns:
+	j for_player_space_columns
+end_player_space_columns:
 	addi $8, $8, -1
 	
 	addi $20, $20, 452
 	
-	j for_player_a_lines
-end_player_a_lines:
+	j for_player_space_lines
+end_player_space_lines:
 	addi $23, $23, -4
-	bne $23, $12, a_next
+	bne $23, $12, space_next
 	addi $23, $0, 0
-a_next:	
+space_next:	
 	j no_type
-
-#-------------------------------------------------------------------
-#type_d
-#-------------------------------------------------------------------
-#type_w
-#-------------------------------------------------------------------
 
 no_type:
 
 ################=====cactus(npc)==========#################################
-#used: $10, $11, $12, $19, $21, ($22), $24
+# used: $10, $11, $20
+move_cactus:
+	lui $20, 0x1001 #adress start
+	add $20, $20, 16856 #actual adress
+	add $20, $20, $21
+	addi $10, $0, 16 #cactus block height
+for_move_cactus_lines:
+	beq $10, $0, end_move_cactus_lines
+	
+	addi $11, $0, 10 #cactus block width
+for_move_cactus_columns:
+	beq $11, $0, end_move_cactus_columns
+	
+	lw $24, 0($20)
+	lw $25, 0x8000($20)
+	sw $25, 0($20)
+	addi $20, $20, -4
+	sw $24, 0($20)
+	
+	addi $20, $20, 8
 
-#	addi $12, $0, -472 #if parameter loop
-#move_cactus:
-#      	lui $21, 0x1001 #adress start 
-#      	addi $21, $21, 16856 #actual adress
-#      	add $21, $21, $22
-#      	addi $10, $0, 16 #cactus block height
-#for_move_cactus_lines:
-#	beq $10, $0, end_move_cactus_lines
+	addi $11, $11, -1
+	j for_move_cactus_columns
+end_move_cactus_columns:
+	addi $10, $10, -1
 	
-#	addi $11, $0, 10 #cactus block width
-#for_move_cactus_columns:
-#	beq $11, $0, end_move_cactus_columns
+	addi $20, $20, 472
 	
-	#lw $24, 0($21)
-#	lw $19, 0x8000($21)
-#	sw $19, 0($21)
-#	addi $21, $21, -4
-#	sw $24, 0($21)
+	j for_move_cactus_lines
+end_move_cactus_lines:
+	jal delay
+	addi $21, $21, -4
 	
-#	addi $21, $21, 8
+	bne $21, -472, move_cactus_next
+	addi $21, $0, 0
+	addi $9, $0, 16384 #eraser adress
+	addi $10, $0, 16 #eraser height
+	addi $11, $0, 10 #eraser width
+	jal eraser
+	j cactus_builder
 	
-#	addi $11, $11, -1
-#	j for_move_cactus_columns
-#end_move_cactus_columns:
-#	addi $10, $10, -1
-	
-#	addi $21, $21, 472
-	
-#	j for_move_cactus_lines
-#end_move_cactus_lines:
-#	jal delay
-#	addi $22, $22, -4
-#	bne $22, $12, move_cactus_next
-	
-#	addi $9, $0, 16384 #eraser adress
-#	addi $10, $0, 16 #eraser height
-#	addi $11, $0, 10 #eraser width
-#	jal eraser_cactus
-	
-#	addi $22, $0, 0	
-	
-#move_cactus_next:
+move_cactus_next:
 	j game #game loop callback
 	
-##############========eraser (cactus)===============###################
+##############========eraser===============###################
 # uses: $9 - adress in screen, $10 - height, $11 - width
 # used: $7, $8, $9, $10, $11, $12
 
-#eraser_cactus:
-#	lui $20, 0x1001
-#	add $20, $20, $9 # actual adress
-#	add $10, $0, $10 # eraser height
+eraser:
+	lui $20, 0x1001
+	add $20, $20, $9 # actual adress
+	add $10, $0, $10 # eraser height
       	
-#for_eraser_cactus_lines:
-#	beq $10, $0, end_eraser_cactus_lines
+for_eraser_lines:
+	beq $10, $0, end_eraser_lines
 	
-#	add $12, $0, $11 #eraser width
-#for_eraser_cactus_columns:
-#	beq $12, $0, end_eraser_cactus_columns
+	add $12, $0, $11 #eraser width
+for_eraser_columns:
+	beq $12, $0, end_eraser_columns
 	
-#	lw $25, 0x8000($20)
-#	sw $25, 0($20)
-#	addi $20, $20, 4
+	lw $25, 0x8000($20)
+	sw $25, 0($20)
+	addi $20, $20, 4
 	
-#	addi $12, $12, -1
-#	j for_eraser_cactus_columns
-#end_eraser_cactus_columns:
-#	addi $10, $10, -1
+	addi $12, $12, -1
+	j for_eraser_columns
+end_eraser_columns:
+	addi $10, $10, -1
 	
-#	addi $20, $20, 472
+	addi $20, $20, 472
 	
-#	j for_eraser_cactus_lines
-#end_eraser_cactus_lines:
-#	jr $31
+	j for_eraser_lines
+end_eraser_lines:
+	jr $31
 	
 #############=========delay===============####################
 delay:
-	addi $15, $0, 0x001fff
+	addi $15, $0, 0x0009ff
 for_delay:
 	beq $15, $0, end_delay
 	nop
@@ -337,4 +325,3 @@ end_delay:
 end: 
 	addi $2, $0, 10
 	syscall
-	
