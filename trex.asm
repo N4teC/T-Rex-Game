@@ -1,3 +1,7 @@
+.data
+#hexa player image code
+.word 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0x000000, 0xffffff, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0x000000, 0x000000, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0x000000, 0x000000, 0xffffff, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0xffffff, 0xffffff, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0xffffff, 0x000000, 0xffffff, 0xffffff, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0xffffff, 0xffffff, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0x000000, 0x000000, 0xffffff, 0x000000, 0x000000, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff, 0xffffff
+
 .text
 
 #512/4 = 128 gu width
@@ -68,7 +72,10 @@ end_player_columns:
 	
 	j for_player_lines
 end_player_lines:
-	
+
+	addi $27, $0, 0 	#used in game
+	addi $28, $0, 10	 #used in game
+	addi $29, $0, 0		#used in game
 ###########=====enemie block(cactus)========##################
 # cactus block size: 10gu width 17gu height
 # used: $10, $11, $12, $19, $20, $21, $22, $24
@@ -174,68 +181,115 @@ end_cactus_lines:
 
 	
 #################=====game run=============########################
-# used: $8, $9, $10, $11, $13, $16, $17, $20, $21, ($22), ($23), $26
+# used: $8, $9, $10, $11, $13, $16, $17, $20, $21, ($22), ($23), $26, ($27), ($28)
+
+	#addi $27, $0, 0 	#used in game
+	#addi $28, $0, 10	 #used in game
+	#addi $29, $0, 0	#used in game
+
 game:
 	
 ################=====player-controls======##########################
-#used: $8, $9, $13, $16, $17, $20, ($23), $26
+#used: $11, $12, $24, $25, $26, ($27), ($29)
 
-player_controls:
-	lui $20, 0x1001 #adress start
-	addi $20, $20, 15932 #actual adress
-       	add $20, $20, $23
-       	
-       	lui $26, 0xffff 
-       	addi $13, $0, ' '
-       	addi $16, $0, 'x'
-       	
-for_player_controls: 
-       	
-	lw $10, 0($26)
-       	beq $10, $0, no_type      
-       	lw $16, 4($26)
-       	beq $16, $13, type_space
-       	beq $16, $16, end
-       	                  
-       	j no_type 
-                                         
-type_space:  
-	addi $12, $0, 15872 #if parameter loop
+        lui $26, 0xffff
+        addi $11, $0, ' '
+        addi $12, $0, 'e'
+        addi $13, $0, 'r'
+       
+player_controls: 
+        lw $10, 0($26)
+        beq $10, $0, no_type      
+        lw $16, 4($26)
+        beq $16, $11, type_space
+        beq $16, $12, end
+        beq $16, $13, reset               
+       
+        j no_type  
+                                                
+type_space:
+	beq $27, $28, space_down
 	
-	addi $8, $0, 17 #player block height
-for_player_space_lines:
-	beq $8, $0, end_player_space_lines
+	lui $20, 0x1001 #adress start 
+	addi $20, $20, 15932 #actual adress
+	add $20, $20, $29
+       	
+       	addi $8, $0, 17 #player block height
+for_space_lines:
+	beq $8, $0, end_space_lines
 	
 	addi $9, $0, 15 #player block width
-for_player_space_columns:
-	beq $9, $0, end_player_space_columns
+for_space_columns:
+	beq $9, $0, end_space_columns
 	
-   	lw $17, 0x8000($20)
-       	sw $17, 0($20)
-       	addi $20, $20, -4
-       	sw $25, 0($20)
-       	
-	addi $20, $20, 8
+	lw $24, 0($20)
+	lw $25, 0x8000($20)
+	sw $25, 0($20)
+	addi $20, $20, -1024
+	sw $24, 0($20)
+	
+	addi $20, $20, 1028
 	
 	addi $9, $9, -1
-	j for_player_space_columns
-end_player_space_columns:
+	j for_space_columns
+end_space_columns:
 	addi $8, $8, -1
 	
 	addi $20, $20, 452
 	
-	j for_player_space_lines
-end_player_space_lines:
-	addi $23, $23, -4
-	bne $23, $12, space_next
-	addi $23, $0, 0
-space_next:	
+	j for_space_lines
+end_space_lines:
+	beq $27, 10, end_space_next
+	addi $29, $29, -1024
+end_space_next:
+	addi $27, $27, 1
 	j no_type
+	
+space_down:
+	beq $28, $0, reset_space
 
+	lui $20, 0x1001 #adress start 
+	addi $20, $20, 15932 #actual adress
+	add $20, $20, $29
+       	addi $8, $0, 17 #player block height
+for_space_down_lines:
+	beq $8, $0, end_space_down_lines
+	
+	addi $9, $0, 15 #player block width
+for_space_down_columns:
+	beq $9, $0, end_space_down_columns
+	
+	lw $24, 0($20)
+	lw $25, 0x8000($20)
+	sw $25, 0($20)
+	addi $20, $20, 1024
+	sw $24, 0($20)
+	
+	addi $20, $20, -1020
+	
+	addi $9, $9, -1
+	j for_space_down_columns
+end_space_down_columns:
+	addi $8, $8, -1
+	
+	addi $20, $20, 452
+	
+	j for_space_down_lines
+end_space_down_lines:
+	addi $29, $29, 1024
+	addi $28, $28, -1
+	addi $27, $27, -1
+	j no_type
+reset_space:
+	addi $27, $0, 0 	
+	addi $28, $0, 10	
+	addi $29, $0, 0		
+	j no_type
+	
 no_type:
 
 ################=====cactus(npc)==========#################################
-# used: $10, $11, $20
+# used: $10, $11, $20, $21, $24, $25
 move_cactus:
 	lui $20, 0x1001 #adress start
 	add $20, $20, 16856 #actual adress
@@ -277,11 +331,17 @@ end_move_cactus_lines:
 	j cactus_builder
 	
 move_cactus_next:
+
+player_type:
+	addi $11, $0, ' '
+	bne $16, $11, j_game
+	bne $28, $0, type_space
+j_game: 
 	j game #game loop callback
 	
 ##############========eraser===============###################
 # uses: $9 - adress in screen, $10 - height, $11 - width
-# used: $7, $8, $9, $10, $11, $12
+# used: $7, $8, $9, $10, $11, $12, $20, $25
 
 eraser:
 	lui $20, 0x1001
@@ -311,8 +371,9 @@ end_eraser_lines:
 	jr $31
 	
 #############=========delay===============####################
+# used: $15
 delay:
-	addi $15, $0, 0x0009ff
+	addi $15, $0, 0x002fff #delay time
 for_delay:
 	beq $15, $0, end_delay
 	nop
@@ -320,7 +381,42 @@ for_delay:
 	j for_delay
 end_delay:
 	jr $31
+##########================reset=============####################
 
+reset:
+	add $1, $0, $0
+	add $2, $0, $0
+	add $3, $0, $0
+	add $4, $0, $0
+	add $5, $0, $0
+	add $6, $0, $0
+	add $7, $0, $0
+	add $8, $0, $0
+	add $9, $0, $0
+	add $10, $0, $0
+	add $11, $0, $0
+	add $12, $0, $0
+	add $13, $0, $0
+	add $14, $0, $0
+	add $15, $0, $0
+	add $16, $0, $0
+	add $17, $0, $0
+	add $18, $0, $0
+	add $19, $0, $0
+	add $20, $0, $0
+	add $21, $0, $0
+	add $22, $0, $0
+	add $23, $0, $0
+	add $24, $0, $0
+	add $25, $0, $0
+	add $26, $0, $0
+	add $27, $0, $0
+	add $28, $0, $0
+	add $29, $0, $0
+	add $30, $0, $0
+	add $31, $0, $0
+
+	j main
 #############=======end game===========####################
 end: 
 	addi $2, $0, 10
